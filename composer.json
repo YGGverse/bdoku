@@ -1,0 +1,17 @@
+{
+    "name": "yggverse/dokuwiki-gemini-server",
+    "description": "DokuWiki bridge for Gemini Protocol",
+    "keywords": [ "yggverse", "gemini", "gemini-protocol", "gemini-server", "wiki", "dokuwiki", "bridge", "server" ],
+    "homepage": "https://github.com/yggverse/dokuwiki-to-gemini",
+    "type": "project",
+    "require": {
+        "yggverse/gemini": "^0.1",
+        "yggverse/titan-ii": "^1.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Yggverse\\DokuwikiGeminiServer\\": "src/"
+        }
+    }
+}
