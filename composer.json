@@ -5,7 +5,7 @@
     "homepage": "https://github.com/yggverse/dokuwiki-to-gemini",
     "type": "project",
     "require": {
-        "yggverse/gemini": "^0.1",
+        "yggverse/gemini": "dev-main",
         "yggverse/titan-ii": "^1.0"
     },
     "license": "MIT",
