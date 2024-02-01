@@ -125,13 +125,43 @@ $server->setHandler(
                     {
                         if ($path = $filesystem->getPagePathByUri($matches[1]))
                         {
+                            $lines = [];
+
+                            // Append actions header
+                            $lines[] = sprintf(
+                                '## %s',
+                                $config->string->actions
+                            );
+
+                            // Append source and homepage link
+                            $lines[] = sprintf(
+                                '=> %s %s',
+                                $config->dokuwiki->url->base,
+                                $config->string->main
+                            );
+
+                            // Append source link
+                            $lines[] = sprintf(
+                                '=> %s/%s %s',
+                                $config->dokuwiki->url->source,
+                                $matches[1],
+                                $config->string->source
+                            );
+
+                            // Merge data lines
+                            $data = implode(
+                                PHP_EOL,
+                                $lines
+                            );
+
+                            // Read document
                             $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
 
                             $response->setContent(
                                 $reader->toGemini(
                                     file_get_contents(
                                         $path
-                                    )
+                                    ) . $data
                                 )
                             );
 

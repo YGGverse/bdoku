@@ -15,7 +15,14 @@
     },
     "url":
     {
-      "canonical":"http://.."
+      "base":"gemini://..",
+      "source":"http://.."
     }
+  },
+  "string":
+  {
+    "main":"Main page",
+    "source":"Source",
+    "actions":"Actions"
   }
 }
