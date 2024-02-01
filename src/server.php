@@ -164,6 +164,16 @@ $server->setHandler(
                             // Read document
                             $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
 
+                            // Define base URL
+                            $reader->setMacros(
+                                '~URL:base~',
+                                sprintf(
+                                    'gemini://%s%s/',
+                                    $config->gemini->server->host,
+                                    $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port
+                                )
+                            );
+
                             $response->setContent(
                                 $reader->toGemini(
                                     file_get_contents(
