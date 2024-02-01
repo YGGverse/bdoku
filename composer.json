@@ -5,8 +5,8 @@
     "homepage": "https://github.com/yggverse/dokuwiki-to-gemini",
     "type": "project",
     "require": {
-        "yggverse/gemini": "dev-main",
-        "yggverse/titan-ii": "^1.0"
+        "yggverse/titan-ii": "^1.0",
+        "yggverse/gemini": "dev-main"
     },
     "license": "MIT",
     "autoload": {
