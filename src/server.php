@@ -135,8 +135,9 @@ $server->setHandler(
 
                             // Append source and homepage link
                             $lines[] = sprintf(
-                                '=> %s %s',
-                                $config->dokuwiki->url->base,
+                                '=> gemini://%s%s %s',
+                                $config->gemini->server->host,
+                                $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
                                 $config->string->main
                             );
 
