@@ -64,7 +64,8 @@ $config = json_decode(
 $memory = new \Yggverse\Cache\Memory(
     $config->memcached->server->host,
     $config->memcached->server->port,
-    $config->memcached->server->namespace,
+    $config->memcached->server->host.
+    $config->memcached->server->port,
     $config->memcached->server->timeout
 );
 

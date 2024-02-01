@@ -13,8 +13,7 @@
       {
           "host":"127.0.0.1",
           "port":11211,
-          "timeout":3600,
-          "namespace":""
+          "timeout":3600
       }
   },
   "dokuwiki":
