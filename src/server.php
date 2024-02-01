@@ -60,6 +60,14 @@ $config = json_decode(
     )
 );
 
+// Init memory
+$memory = new \Yggverse\Cache\Memory(
+    $config->memcached->server->host,
+    $config->memcached->server->port,
+    $config->memcached->server->namespace,
+    $config->memcached->server->timeout
+);
+
 // Init filesystem
 $filesystem = new \Yggverse\Gemini\Dokuwiki\Filesystem(
     sprintf(
@@ -82,6 +90,7 @@ $server->setHandler(
     function (\Yggverse\TitanII\Request $request): \Yggverse\TitanII\Response
     {
         global $config;
+        global $memory;
         global $filesystem;
 
         $response = new \Yggverse\TitanII\Response();
@@ -125,6 +134,16 @@ $server->setHandler(
                     {
                         if ($path = $filesystem->getPagePathByUri($matches[1]))
                         {
+                            // Check for cached results
+                            if ($content = $memory->get($path))
+                            {
+                                $response->setContent(
+                                    $content
+                                );
+
+                                return $response;
+                            }
+
                             // Init reader
                             $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
 
@@ -192,12 +211,21 @@ $server->setHandler(
                             // Append about info
                             $lines[] = $config->string->about;
 
+                            // Merge lines
+                            $content = implode(
+                                PHP_EOL,
+                                $lines
+                            );
+
+                            // Cache results
+                            $memory->set(
+                                $path,
+                                $content
+                            );
+
                             // Response
                             $response->setContent(
-                                implode(
-                                    PHP_EOL,
-                                    $lines
-                                )
+                                $content
                             );
 
                             return $response;
