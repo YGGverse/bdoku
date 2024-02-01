@@ -125,7 +125,10 @@ $server->setHandler(
                     {
                         if ($path = $filesystem->getPagePathByUri($matches[1]))
                         {
-                            $lines = [];
+                            // Append extra data
+                            $lines = [
+                                PHP_EOL
+                            ];
 
                             // Append actions header
                             $lines[] = sprintf(
