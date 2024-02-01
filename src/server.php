@@ -192,15 +192,12 @@ $server->setHandler(
                             // Append about info
                             $lines[] = $config->string->about;
 
-                            // Merge data lines
-                            $data = implode(
-                                PHP_EOL,
-                                $lines
-                            );
-
-                            // Return converted response
+                            // Response
                             $response->setContent(
-                                $gemini . $data
+                                implode(
+                                    PHP_EOL,
+                                    $lines
+                                )
                             );
 
                             return $response;
