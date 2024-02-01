@@ -125,10 +125,47 @@ $server->setHandler(
                     {
                         if ($path = $filesystem->getPagePathByUri($matches[1]))
                         {
-                            // Append extra data
+                            // Init reader
+                            $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
+
+                            // Define base URL
+                            $reader->setMacros(
+                                '~URL:base~',
+                                sprintf(
+                                    'gemini://%s%s/%s',
+                                    $config->gemini->server->host,
+                                    $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                                    '' // @TODO append relative prefix (:)
+                                )
+                            );
+
+                            // Convert
+                            $gemini = $reader->toGemini(
+                                file_get_contents(
+                                    $path
+                                )
+                            );
+
                             $lines = [
-                                PHP_EOL
+                                $gemini
                             ];
+
+                            // Get page links
+                            if ($links = $reader->getLinks($gemini))
+                            {
+                                $lines[] = sprintf(
+                                    '## %s',
+                                    $config->string->links
+                                );
+
+                                foreach ($links as $link)
+                                {
+                                    $lines[] = sprintf(
+                                        '=> %s',
+                                        $link
+                                    );
+                                }
+                            }
 
                             // Append actions header
                             $lines[] = sprintf(
@@ -161,26 +198,9 @@ $server->setHandler(
                                 $lines
                             );
 
-                            // Read document
-                            $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
-
-                            // Define base URL
-                            $reader->setMacros(
-                                '~URL:base~',
-                                sprintf(
-                                    'gemini://%s%s/',
-                                    $config->gemini->server->host,
-                                    $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port
-                                )
-                            );
-
                             // Return converted response
                             $response->setContent(
-                                $reader->toGemini(
-                                    file_get_contents(
-                                        $path
-                                    ) . $data
-                                )
+                                $gemini . $data
                             );
 
                             return $response;

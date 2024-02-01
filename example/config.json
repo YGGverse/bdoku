@@ -20,6 +20,7 @@
   },
   "string":
   {
+    "links":"Links",
     "actions":"Actions",
     "main":"Main page",
     "source":"Source",
