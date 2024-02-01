@@ -20,8 +20,9 @@
   },
   "string":
   {
+    "actions":"Actions",
     "main":"Main page",
     "source":"Source",
-    "actions":"Actions"
+    "about":"=> https://github.com/YGGverse/dokuwiki-gemini-server GitHub"
   }
 }

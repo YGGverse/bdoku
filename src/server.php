@@ -149,6 +149,9 @@ $server->setHandler(
                                 $config->string->source
                             );
 
+                            // Append about info
+                            $lines[] = $config->string->about;
+
                             // Merge data lines
                             $data = implode(
                                 PHP_EOL,
