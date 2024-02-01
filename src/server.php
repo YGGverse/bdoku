@@ -174,6 +174,7 @@ $server->setHandler(
                                 )
                             );
 
+                            // Return converted response
                             $response->setContent(
                                 $reader->toGemini(
                                     file_get_contents(
