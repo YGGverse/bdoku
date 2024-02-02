@@ -165,31 +165,50 @@ $server->setHandler(
                     {
                         if (str_starts_with($path, $directory) && $path != $directory)
                         {
+                            // Init H1
+                            $h1 = null;
+
                             // Init this directory URI
                             $uri = $filesystem->getDirectoryUriByPath(
                                 $path
                             );
 
-                            // Parse URI segments
+                            // Skip sections deeper this level
+                            if (substr_count($uri, ':') > ($_uri ? substr_count($_uri, ':') + 1 : 0))
+                            {
+                                continue;
+                            }
+
+                            // Get section names
                             $segments = [];
+
                             foreach ((array) explode(':', $uri) as $segment)
                             {
                                 $segments[] = $segment;
-                            }
 
-                            // Set default section alias
-                            $alias = empty($_uri) ? $config->string->main : '';
-
-                            // Find section name if exists in index file
-                            if ($file = $filesystem->getPagePathByUri($uri . ':' . end($segments)))
-                            {
-                                $alias = $reader->getH1(
-                                    $reader->toGemini(
-                                        file_get_contents(
-                                            $file
+                                // Find section index if exists
+                                if ($file = $filesystem->getPagePathByUri(implode(':', $segments) . ':' . $segment))
+                                {
+                                    $h1 = $reader->getH1(
+                                        $reader->toGemini(
+                                            file_get_contents(
+                                                $file
+                                            )
                                         )
-                                    )
-                                );
+                                    );
+                                }
+
+                                // Find section page if exists
+                                else if ($file = $filesystem->getPagePathByUri(implode(':', $segments)))
+                                {
+                                    $h1 = $reader->getH1(
+                                        $reader->toGemini(
+                                            file_get_contents(
+                                                $file
+                                            )
+                                        )
+                                    );
+                                }
                             }
 
                             // Register section link
@@ -198,12 +217,12 @@ $server->setHandler(
                                 $config->gemini->server->host,
                                 $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
                                 $uri,
-                                $alias
+                                $h1
                             );
                         }
                     }
 
-                    // Append sections list if exist
+                    // Append sections
                     if ($sections)
                     {
                         // Keep unique
