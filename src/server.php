@@ -209,6 +209,12 @@ $server->setHandler(
                                         )
                                     );
                                 }
+
+                                // Reset title of undefined segment
+                                else
+                                {
+                                    $h1 = null;
+                                }
                             }
 
                             // Register section link
