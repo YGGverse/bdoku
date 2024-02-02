@@ -127,10 +127,10 @@ $server->setHandler(
                 // Parse request
                 preg_match('/^\/([^\/]*)$/', $request->getPath(), $matches);
 
-                $uri = isset($matches[1]) ? $matches[1] : '';
+                $_uri = isset($matches[1]) ? $matches[1] : '';
 
                 // Directory request, build index links as no side menu in gemini version
-                if ($directory = $filesystem->getDirectoryPathByUri($uri))
+                if ($directory = $filesystem->getDirectoryPathByUri($_uri))
                 {
                     // Check for cached results
                     /*
@@ -165,17 +165,45 @@ $server->setHandler(
                     {
                         if (str_starts_with($path, $directory) && $path != $directory)
                         {
+                            // Init this directory URI
+                            $uri = $filesystem->getDirectoryUriByPath(
+                                $path
+                            );
+
+                            // Parse URI segments
+                            $segments = [];
+                            foreach ((array) explode(':', $uri) as $segment)
+                            {
+                                $segments[] = $segment;
+                            }
+
+                            // Set default section alias
+                            $alias = empty($_uri) ? $config->string->main : '';
+
+                            // Find section name if exists in index file
+                            if ($file = $filesystem->getPagePathByUri($uri . ':' . end($segments)))
+                            {
+                                $alias = $reader->getH1(
+                                    $reader->toGemini(
+                                        file_get_contents(
+                                            $file
+                                        )
+                                    )
+                                );
+                            }
+
+                            // Register section link
                             $sections[] = sprintf(
-                                '=> gemini://%s%s/%s',
+                                '=> gemini://%s%s/%s %s',
                                 $config->gemini->server->host,
                                 $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
-                                $filesystem->getDirectoryUriByPath(
-                                    $path
-                                )
+                                $uri,
+                                $alias
                             );
                         }
                     }
 
+                    // Append sections list if exist
                     if ($sections)
                     {
                         // Keep unique
@@ -287,7 +315,7 @@ $server->setHandler(
                 }
 
                 // File request, get page content
-                if ($path = $filesystem->getPagePathByUri($uri))
+                if ($path = $filesystem->getPagePathByUri($_uri))
                 {
                     // Check for cached results
                     if ($content = $memory->get($path))
@@ -317,7 +345,7 @@ $server->setHandler(
                     /* @TODO
                     $pages = [];
 
-                    if ($directory = $filesystem->getDirectoryPathByUri($uri))
+                    if ($directory = $filesystem->getDirectoryPathByUri($_uri))
                     {
                         foreach ($filesystem->getPagePathsByPath($directory) as $file)
                         {
