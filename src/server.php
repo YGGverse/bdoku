@@ -147,15 +147,55 @@ $server->setHandler(
                     // Init reader
                     $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
 
-                    // Build home page
+                    // Init home page content
                     $lines = [
                         PHP_EOL
                     ];
 
+                    // Build header
+                    $h1 = [];
+
+                    $segments = [];
+
+                    foreach ((array) explode(':', $_uri) as $segment)
+                    {
+                        $segments[] = $segment;
+
+                        // Find section index if exists
+                        if ($file = $filesystem->getPagePathByUri(implode(':', $segments) . ':' . $segment))
+                        {
+                            $h1[] = $reader->getH1(
+                                $reader->toGemini(
+                                    file_get_contents(
+                                        $file
+                                    )
+                                )
+                            );
+                        }
+
+                        // Find section page if exists
+                        else if ($file = $filesystem->getPagePathByUri(implode(':', $segments)))
+                        {
+                            $h1[] = $reader->getH1(
+                                $reader->toGemini(
+                                    file_get_contents(
+                                        $file
+                                    )
+                                )
+                            );
+                        }
+
+                        // Reset title of undefined segment
+                        else
+                        {
+                            $h1[] = null;
+                        }
+                    }
+
                     // Append header
                     $lines[] = sprintf(
                         '# %s',
-                        $config->string->welcome
+                        empty($h1[0]) ? $config->string->welcome : implode(' - ', $h1)
                     );
 
                     // Get children sections
@@ -165,8 +205,8 @@ $server->setHandler(
                     {
                         if (str_starts_with($path, $directory) && $path != $directory)
                         {
-                            // Init H1
-                            $h1 = null;
+                            // Init link name
+                            $alt = null;
 
                             // Init this directory URI
                             $uri = $filesystem->getDirectoryUriByPath(
@@ -189,7 +229,7 @@ $server->setHandler(
                                 // Find section index if exists
                                 if ($file = $filesystem->getPagePathByUri(implode(':', $segments) . ':' . $segment))
                                 {
-                                    $h1 = $reader->getH1(
+                                    $alt = $reader->getH1(
                                         $reader->toGemini(
                                             file_get_contents(
                                                 $file
@@ -201,7 +241,7 @@ $server->setHandler(
                                 // Find section page if exists
                                 else if ($file = $filesystem->getPagePathByUri(implode(':', $segments)))
                                 {
-                                    $h1 = $reader->getH1(
+                                    $alt = $reader->getH1(
                                         $reader->toGemini(
                                             file_get_contents(
                                                 $file
@@ -213,7 +253,7 @@ $server->setHandler(
                                 // Reset title of undefined segment
                                 else
                                 {
-                                    $h1 = null;
+                                    $alt = null;
                                 }
                             }
 
@@ -221,7 +261,7 @@ $server->setHandler(
                             $sections[] = sprintf(
                                 '=> /%s %s',
                                 $uri,
-                                $h1
+                                $alt
                             );
                         }
                     }
