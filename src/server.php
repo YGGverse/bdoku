@@ -262,7 +262,6 @@ $server->setHandler(
                 else if ($directory = $filesystem->getDirectoryPathByUri($_uri))
                 {
                     // Check for cached results
-                    /*
                     if ($content = $memory->get('/'))
                     {
                         $response->setContent(
@@ -271,7 +270,6 @@ $server->setHandler(
 
                         return $response;
                     }
-                    */
 
                     // Init reader
                     $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
