@@ -76,6 +76,15 @@ $filesystem = new \Yggverse\Gemini\Dokuwiki\Filesystem(
     )
 );
 
+// Init reader
+$reader = new \Yggverse\Gemini\Dokuwiki\Reader();
+
+// Init helper
+$helper = new \Yggverse\Gemini\Dokuwiki\Helper(
+    $filesystem,
+    $reader
+);
+
 // Init server
 $server = new \Yggverse\TitanII\Server();
 
@@ -93,6 +102,8 @@ $server->setHandler(
         global $config;
         global $memory;
         global $filesystem;
+        global $reader;
+        global $helper;
 
         $response = new \Yggverse\TitanII\Response();
 
@@ -142,9 +153,6 @@ $server->setHandler(
                         return $response;
                     }
 
-                    // Init reader
-                    $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
-
                     // Define base URL
                     $reader->setMacros(
                         '~URL:base~',
@@ -157,33 +165,59 @@ $server->setHandler(
                     );
 
                     // Define index menu
-                    /* @TODO
-                    $pages = [];
+                    $index = [];
 
-                    if ($directory = $filesystem->getDirectoryPathByUri($_uri))
+                    // Append index sections
+                    if ($sections = $helper->getChildrenSectionLinksByUri($_uri))
                     {
-                        foreach ($filesystem->getPagePathsByPath($directory) as $file)
+                        // Append header
+                        $index[] = sprintf(
+                            '### %s',
+                            $config->string->sections
+                        );
+
+                        // Append sections
+                        foreach ($sections as $section)
                         {
-                            $pages[] = sprintf(
-                                '=> /%s',
-                                $filesystem->getPageUriByPath(
-                                    $file
-                                )
-                            );
+                            $index[] = $section;
                         }
                     }
 
-                    if ($pages)
+                    // Get children pages
+                    if ($pages = $helper->getChildrenPageLinksByUri($_uri))
+                    {
+                        // Append header
+                        $index[] = sprintf(
+                            '### %s',
+                            $config->string->pages
+                        );
+
+                        // Append pages
+                        foreach ($pages as $page)
+                        {
+                            $index[] = $page;
+                        }
+                    }
+
+                    // Set macros value
+                    if ($index)
                     {
                         $reader->setRule(
                             '/\{\{indexmenu>:([^\}]+)\}\}/i',
                             implode(
                                 PHP_EOL,
-                                $pages
+                                $index
+                            )
+                        );
+
+                        $reader->setRule(
+                            '/\{\{indexmenu_n>[\d]+\}\}/i',
+                            implode(
+                                PHP_EOL,
+                                $index
                             )
                         );
                     }
-                    */
 
                     // Convert
                     $gemini = $reader->toGemini(
@@ -326,86 +360,8 @@ $server->setHandler(
                     );
 
                     // Get children sections
-                    $sections = [];
-
-                    foreach ($filesystem->getTree() as $path => $files)
+                    if ($sections = $helper->getChildrenSectionLinksByUri($_uri))
                     {
-                        if (str_starts_with($path, $directory) && $path != $directory)
-                        {
-                            // Init link name
-                            $alt = null;
-
-                            // Init this directory URI
-                            $uri = $filesystem->getDirectoryUriByPath(
-                                $path
-                            );
-
-                            // Skip sections deeper this level
-                            if (substr_count($uri, ':') > ($_uri ? substr_count($_uri, ':') + 1 : 0))
-                            {
-                                continue;
-                            }
-
-                            // Get section names
-                            $segments = [];
-
-                            foreach ((array) explode(':', $uri) as $segment)
-                            {
-                                $segments[] = $segment;
-
-                                // Find section index if exists
-                                if ($file = $filesystem->getPagePathByUri(implode(':', $segments) . ':' . $segment))
-                                {
-                                    $alt = $reader->getH1(
-                                        $reader->toGemini(
-                                            file_get_contents(
-                                                $file
-                                            )
-                                        )
-                                    );
-                                }
-
-                                // Find section page if exists
-                                else if ($file = $filesystem->getPagePathByUri(implode(':', $segments)))
-                                {
-                                    $alt = $reader->getH1(
-                                        $reader->toGemini(
-                                            file_get_contents(
-                                                $file
-                                            )
-                                        )
-                                    );
-                                }
-
-                                // Reset title of undefined segment
-                                else
-                                {
-                                    $alt = null;
-                                }
-                            }
-
-                            // Register section link
-                            $sections[] = sprintf(
-                                '=> /%s %s',
-                                $uri,
-                                $alt
-                            );
-                        }
-                    }
-
-                    // Append sections
-                    if ($sections)
-                    {
-                        // Keep unique
-                        $sections = array_unique(
-                            $sections
-                        );
-
-                        // Sort asc
-                        sort(
-                            $sections
-                        );
-
                         // Append header
                         $lines[] = sprintf(
                             '## %s',
@@ -420,37 +376,8 @@ $server->setHandler(
                     }
 
                     // Get children pages
-                    $pages = [];
-
-                    foreach ($filesystem->getPagePathsByPath($directory) as $file)
+                    if ($pages = $helper->getChildrenPageLinksByUri($_uri))
                     {
-                        $pages[] = sprintf(
-                            '=> /%s %s',
-                            $filesystem->getPageUriByPath(
-                                $file
-                            ),
-                            $reader->getH1(
-                                $reader->toGemini(
-                                    file_get_contents(
-                                        $file
-                                    )
-                                )
-                            )
-                        );
-                    }
-
-                    if ($pages)
-                    {
-                        // Keep unique
-                        $pages = array_unique(
-                            $pages
-                        );
-
-                        // Sort asc
-                        sort(
-                            $pages
-                        );
-
                         // Append header
                         $lines[] = sprintf(
                             '## %s',
@@ -485,8 +412,6 @@ $server->setHandler(
                         PHP_EOL,
                         $lines
                     );
-
-                    // @TODO '~index:menu~'
 
                     // Cache results
                     $memory->set(
