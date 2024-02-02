@@ -144,6 +144,9 @@ $server->setHandler(
                     }
                     */
 
+                    // Init reader
+                    $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
+
                     // Build home page
                     $lines = [
                         PHP_EOL
@@ -204,11 +207,18 @@ $server->setHandler(
                     foreach ($filesystem->getPagePathsByPath($directory) as $file)
                     {
                         $pages[] = sprintf(
-                            '=> gemini://%s%s/%s',
+                            '=> gemini://%s%s/%s %s',
                             $config->gemini->server->host,
                             $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
                             $filesystem->getPageUriByPath(
                                 $file
+                            ),
+                            $reader->getH1(
+                                $reader->toGemini(
+                                    file_get_contents(
+                                        $file
+                                    )
+                                )
                             )
                         );
                     }
