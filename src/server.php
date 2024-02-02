@@ -69,6 +69,8 @@ $memory = new \Yggverse\Cache\Memory(
     $config->memcached->server->timeout
 );
 
+$memory->flush();
+
 // Init filesystem
 $filesystem = new \Yggverse\Gemini\Dokuwiki\Filesystem(
     sprintf(
@@ -84,6 +86,71 @@ $helper = new \Yggverse\Gemini\Dokuwiki\Helper(
     $filesystem,
     $reader
 );
+
+// Init search server
+$manticore = new \Manticoresearch\Client(
+    [
+        'host' => $config->manticore->server->host,
+        'port' => $config->manticore->server->port,
+    ]
+);
+
+// Init search index
+$index = $manticore->index(
+    $config->manticore->index->document->name
+);
+
+$index->drop(true);
+$index->create(
+    [
+        'uri' =>
+        [
+            'type' => 'text'
+        ],
+        'name' =>
+        [
+            'type' => 'text'
+        ],
+        'data' =>
+        [
+            'type' => 'text'
+        ]
+    ],
+    (array) $config->manticore->index->document->settings
+);
+
+foreach ($filesystem->getList() as $path)
+{
+    if (!str_ends_with($path, $config->manticore->index->extension))
+    {
+        continue;
+    }
+
+    if ($uri = $filesystem->getPageUriByPath($path))
+    {
+        if ($data = file_get_contents($path))
+        {
+            $gemini = $reader->toGemini(
+                $data
+            );
+
+            $index->addDocument(
+                [
+                    'uri'  => $uri,
+                    'name' => (string) $reader->getH1(
+                        $gemini
+                    ),
+                    'data' => (string) $reader->toGemini(
+                        $gemini
+                    )
+                ],
+                crc32(
+                    $uri
+                )
+            );
+        }
+    }
+}
 
 // Init server
 $server = new \Yggverse\TitanII\Server();
@@ -101,6 +168,7 @@ $server->setHandler(
     {
         global $config;
         global $memory;
+        global $index;
         global $filesystem;
         global $reader;
         global $helper;
@@ -118,18 +186,135 @@ $server->setHandler(
         // Route begin
         switch ($request->getPath())
         {
-            // Static route here
+            // Static routes
             case null:
             case false:
             case '':
 
-                // @TODO redirect to document root (/)
+                $response->setCode(
+                    30
+                );
+
+                $response->setMeta(
+                    sprintf(
+                        'gemini://%s%s/',
+                        $config->gemini->server->host,
+                        $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port
+                    )
+                );
+
+                return $response;
 
             break;
 
             case '/search':
 
-                // @TODO implement search feature
+                // Search query request
+                if (empty($request->getQuery()))
+                {
+                    $response->setMeta(
+                        'text/plain'
+                    );
+
+                    $response->setCode(
+                        10
+                    );
+
+                    return $response;
+                }
+
+                // Prepare query
+                $query = trim(
+                    urldecode(
+                        $request->getQuery()
+                    )
+                );
+
+                // Do search
+                $results = $index->search(
+                    @\Manticoresearch\Utils::escape(
+                        $query
+                    )
+                )->get();
+
+                // Init page content
+                $lines = [
+                    PHP_EOL
+                ];
+
+                // Append page title
+                $lines[] = sprintf(
+                    '# %s - %s',
+                    $config->string->search,
+                    $query
+                );
+
+                // Append search results
+                if ($total = $results->getTotal())
+                {
+                    $lines[] = sprintf(
+                        '%s: %d',
+                        $config->string->found,
+                        $total
+                    );
+
+                    $lines[] = sprintf(
+                        '## %s',
+                        $config->string->results
+                    );
+
+                    foreach($results as $result)
+                    {
+                        $lines[] = sprintf(
+                            '=> /%s %s',
+                            $result->get('uri'),
+                            $result->get('name')
+                        );
+                    }
+                }
+
+                // Nothing found
+                else
+                {
+                    $lines[] = $config->string->nothing;
+                }
+
+                // Append actions
+                $lines[] = sprintf(
+                    '## %s',
+                    $config->string->actions
+                );
+
+                // Append search link
+                $lines[] = sprintf(
+                    '=> /search %s',
+                    $config->string->search
+                );
+
+                // Append homepage link
+                $lines[] = sprintf(
+                    '=> / %s',
+                    $config->string->main
+                );
+
+                // Append source link
+                $lines[] = sprintf(
+                    '=> %s %s',
+                    $config->dokuwiki->url->source,
+                    $config->string->source
+                );
+
+                // Append about info
+                $lines[] = $config->string->about;
+
+                $response->setContent(
+                    implode(
+                        PHP_EOL,
+                        $lines
+                    )
+                );
+
+                return $response;
 
             break;
 
@@ -165,13 +350,13 @@ $server->setHandler(
                     );
 
                     // Define index menu
-                    $index = [];
+                    $menu = [];
 
                     // Append index sections
                     if ($sections = $helper->getChildrenSectionLinksByUri($_uri))
                     {
                         // Append header
-                        $index[] = sprintf(
+                        $menu[] = sprintf(
                             '### %s',
                             $config->string->sections
                         );
@@ -179,7 +364,7 @@ $server->setHandler(
                         // Append sections
                         foreach ($sections as $section)
                         {
-                            $index[] = $section;
+                            $menu[] = $section;
                         }
                     }
 
@@ -187,7 +372,7 @@ $server->setHandler(
                     if ($pages = $helper->getChildrenPageLinksByUri($_uri))
                     {
                         // Append header
-                        $index[] = sprintf(
+                        $menu[] = sprintf(
                             '### %s',
                             $config->string->pages
                         );
@@ -195,18 +380,18 @@ $server->setHandler(
                         // Append pages
                         foreach ($pages as $page)
                         {
-                            $index[] = $page;
+                            $menu[] = $page;
                         }
                     }
 
                     // Set macros value
-                    if ($index)
+                    if ($menu)
                     {
                         $reader->setRule(
                             '/\{\{indexmenu>:([^\}]+)\}\}/i',
                             implode(
                                 PHP_EOL,
-                                $index
+                                $menu
                             )
                         );
 
@@ -214,7 +399,7 @@ $server->setHandler(
                             '/\{\{indexmenu_n>[\d]+\}\}/i',
                             implode(
                                 PHP_EOL,
-                                $index
+                                $menu
                             )
                         );
                     }
@@ -253,11 +438,15 @@ $server->setHandler(
                         $config->string->actions
                     );
 
-                    // Append source and homepage link
+                    // Append search link
                     $lines[] = sprintf(
-                        '=> gemini://%s%s %s',
-                        $config->gemini->server->host,
-                        $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                        '=> /search %s',
+                        $config->string->search
+                    );
+
+                    // Append homepage link
+                    $lines[] = sprintf(
+                        '=> / %s',
                         $config->string->main
                     );
 
@@ -395,6 +584,12 @@ $server->setHandler(
                     $lines[] = sprintf(
                         '## %s',
                         $config->string->resources
+                    );
+
+                    // Append search link
+                    $lines[] = sprintf(
+                        '=> /search %s',
+                        $config->string->search
                     );
 
                     // Append source link

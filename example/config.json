@@ -16,6 +16,29 @@
           "timeout":3600
       }
   },
+  "manticore":
+  {
+    "server":
+    {
+      "host":"127.0.0.1",
+      "port":9308
+    },
+    "index":
+    {
+      "document":{
+          "name":"dokuwiki_gemini_server",
+          "settings":
+          {
+              "morphology":"stem_cz,stem_enru",
+              "index_exact_words":1,
+              "html_strip":1,
+              "min_word_len":3,
+              "min_prefix_len":3
+          }
+      },
+      "extension":"txt"
+    }
+  },
   "dokuwiki":
   {
     "uri":
@@ -34,6 +57,10 @@
     "sections":"Sections",
     "pages":"Pages",
     "actions":"Actions",
+    "search":"Search",
+    "results":"Request results",
+    "found":"Found",
+    "nothing":"Nothing found by this request",
     "main":"Main page",
     "source":"Source",
     "welcome":"About",
