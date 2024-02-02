@@ -213,9 +213,7 @@ $server->setHandler(
 
                             // Register section link
                             $sections[] = sprintf(
-                                '=> gemini://%s%s/%s %s',
-                                $config->gemini->server->host,
-                                $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                                '=> /%s %s',
                                 $uri,
                                 $h1
                             );
@@ -254,9 +252,7 @@ $server->setHandler(
                     foreach ($filesystem->getPagePathsByPath($directory) as $file)
                     {
                         $pages[] = sprintf(
-                            '=> gemini://%s%s/%s %s',
-                            $config->gemini->server->host,
-                            $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                            '=> /%s %s',
                             $filesystem->getPageUriByPath(
                                 $file
                             ),
@@ -369,9 +365,7 @@ $server->setHandler(
                         foreach ($filesystem->getPagePathsByPath($directory) as $file)
                         {
                             $pages[] = sprintf(
-                                '=> gemini://%s%s/%s',
-                                $config->gemini->server->host,
-                                $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                                '=> /%s',
                                 $filesystem->getPageUriByPath(
                                     $file
                                 )
