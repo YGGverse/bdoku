@@ -29,10 +29,14 @@
   },
   "string":
   {
+    "resources":"Resources",
     "links":"Links",
+    "sections":"Sections",
+    "pages":"Pages",
     "actions":"Actions",
     "main":"Main page",
     "source":"Source",
+    "welcome":"About",
     "about":"=> https://github.com/YGGverse/dokuwiki-gemini-server GitHub"
   }
 }
