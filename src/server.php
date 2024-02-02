@@ -129,8 +129,137 @@ $server->setHandler(
 
                 $_uri = isset($matches[1]) ? $matches[1] : '';
 
-                // Directory request, build index links as no side menu in gemini version
-                if ($directory = $filesystem->getDirectoryPathByUri($_uri))
+                // File request, get page content
+                if ($path = $filesystem->getPagePathByUri($_uri))
+                {
+                    // Check for cached results
+                    if ($content = $memory->get($path))
+                    {
+                        $response->setContent(
+                            $content
+                        );
+
+                        return $response;
+                    }
+
+                    // Init reader
+                    $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
+
+                    // Define base URL
+                    $reader->setMacros(
+                        '~URL:base~',
+                        sprintf(
+                            'gemini://%s%s/%s',
+                            $config->gemini->server->host,
+                            $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                            '' // @TODO append relative prefix (:)
+                        )
+                    );
+
+                    // Define index menu
+                    /* @TODO
+                    $pages = [];
+
+                    if ($directory = $filesystem->getDirectoryPathByUri($_uri))
+                    {
+                        foreach ($filesystem->getPagePathsByPath($directory) as $file)
+                        {
+                            $pages[] = sprintf(
+                                '=> /%s',
+                                $filesystem->getPageUriByPath(
+                                    $file
+                                )
+                            );
+                        }
+                    }
+
+                    if ($pages)
+                    {
+                        $reader->setRule(
+                            '/\{\{indexmenu>:([^\}]+)\}\}/i',
+                            implode(
+                                PHP_EOL,
+                                $pages
+                            )
+                        );
+                    }
+                    */
+
+                    // Convert
+                    $gemini = $reader->toGemini(
+                        file_get_contents(
+                            $path
+                        )
+                    );
+
+                    $lines = [
+                        $gemini
+                    ];
+
+                    // Get page links
+                    if ($links = $reader->getLinks($gemini))
+                    {
+                        $lines[] = sprintf(
+                            '## %s',
+                            $config->string->links
+                        );
+
+                        foreach ($links as $link)
+                        {
+                            $lines[] = sprintf(
+                                '=> %s',
+                                $link
+                            );
+                        }
+                    }
+
+                    // Append actions header
+                    $lines[] = sprintf(
+                        '## %s',
+                        $config->string->actions
+                    );
+
+                    // Append source and homepage link
+                    $lines[] = sprintf(
+                        '=> gemini://%s%s %s',
+                        $config->gemini->server->host,
+                        $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
+                        $config->string->main
+                    );
+
+                    // Append source link
+                    $lines[] = sprintf(
+                        '=> %s/%s %s',
+                        $config->dokuwiki->url->source,
+                        $matches[1],
+                        $config->string->source
+                    );
+
+                    // Append about info
+                    $lines[] = $config->string->about;
+
+                    // Merge lines
+                    $content = implode(
+                        PHP_EOL,
+                        $lines
+                    );
+
+                    // Cache results
+                    $memory->set(
+                        $path,
+                        $content
+                    );
+
+                    // Response
+                    $response->setContent(
+                        $content
+                    );
+
+                    return $response;
+                }
+
+                // File not found, request directory for minimal navigation
+                else if ($directory = $filesystem->getDirectoryPathByUri($_uri))
                 {
                     // Check for cached results
                     /*
@@ -364,135 +493,6 @@ $server->setHandler(
                     // Cache results
                     $memory->set(
                         '/',
-                        $content
-                    );
-
-                    // Response
-                    $response->setContent(
-                        $content
-                    );
-
-                    return $response;
-                }
-
-                // File request, get page content
-                if ($path = $filesystem->getPagePathByUri($_uri))
-                {
-                    // Check for cached results
-                    if ($content = $memory->get($path))
-                    {
-                        $response->setContent(
-                            $content
-                        );
-
-                        return $response;
-                    }
-
-                    // Init reader
-                    $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
-
-                    // Define base URL
-                    $reader->setMacros(
-                        '~URL:base~',
-                        sprintf(
-                            'gemini://%s%s/%s',
-                            $config->gemini->server->host,
-                            $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
-                            '' // @TODO append relative prefix (:)
-                        )
-                    );
-
-                    // Define index menu
-                    /* @TODO
-                    $pages = [];
-
-                    if ($directory = $filesystem->getDirectoryPathByUri($_uri))
-                    {
-                        foreach ($filesystem->getPagePathsByPath($directory) as $file)
-                        {
-                            $pages[] = sprintf(
-                                '=> /%s',
-                                $filesystem->getPageUriByPath(
-                                    $file
-                                )
-                            );
-                        }
-                    }
-
-                    if ($pages)
-                    {
-                        $reader->setRule(
-                            '/\{\{indexmenu>:([^\}]+)\}\}/i',
-                            implode(
-                                PHP_EOL,
-                                $pages
-                            )
-                        );
-                    }
-                    */
-
-                    // Convert
-                    $gemini = $reader->toGemini(
-                        file_get_contents(
-                            $path
-                        )
-                    );
-
-                    $lines = [
-                        $gemini
-                    ];
-
-                    // Get page links
-                    if ($links = $reader->getLinks($gemini))
-                    {
-                        $lines[] = sprintf(
-                            '## %s',
-                            $config->string->links
-                        );
-
-                        foreach ($links as $link)
-                        {
-                            $lines[] = sprintf(
-                                '=> %s',
-                                $link
-                            );
-                        }
-                    }
-
-                    // Append actions header
-                    $lines[] = sprintf(
-                        '## %s',
-                        $config->string->actions
-                    );
-
-                    // Append source and homepage link
-                    $lines[] = sprintf(
-                        '=> gemini://%s%s %s',
-                        $config->gemini->server->host,
-                        $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port,
-                        $config->string->main
-                    );
-
-                    // Append source link
-                    $lines[] = sprintf(
-                        '=> %s/%s %s',
-                        $config->dokuwiki->url->source,
-                        $matches[1],
-                        $config->string->source
-                    );
-
-                    // Append about info
-                    $lines[] = $config->string->about;
-
-                    // Merge lines
-                    $content = implode(
-                        PHP_EOL,
-                        $lines
-                    );
-
-                    // Cache results
-                    $memory->set(
-                        $path,
                         $content
                     );
 
