@@ -356,7 +356,7 @@ $server->setHandler(
                     // Append header
                     $lines[] = sprintf(
                         '# %s',
-                        empty($h1[0]) ? $config->string->welcome : implode(' - ', $h1)
+                        empty($h1[0]) ? $config->string->welcome : implode(' ', $h1)
                     );
 
                     // Get children sections
