@@ -32,7 +32,7 @@ Project under development, please join to work by sending PR or bug report!
 
 Before launch the server, copy or create alias of `path/to/dokuwiki/data` folder to `dokuwiki-gemini-server/host/127.0.0.1` on example above.
 
-On every start, previous memory cache will be cleaned and new search index will be created.
+On every start, previous memory cache will be cleaned and new search index created.
 After `data` folder update, you need just to restart your server with systemd or another process manager.
 
 `php src/server.php 127.0.0.1`
