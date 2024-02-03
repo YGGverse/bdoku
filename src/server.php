@@ -128,7 +128,7 @@ foreach ($filesystem->getList() as $path)
 
     if ($uri = $filesystem->getPageUriByPath($path))
     {
-        if ($data = file_get_contents($path))
+        if ($data = $filesystem->getData($path))
         {
             $gemini = $reader->toGemini(
                 $data
@@ -406,7 +406,7 @@ $server->setHandler(
 
                     // Convert
                     $gemini = $reader->toGemini(
-                        file_get_contents(
+                        $filesystem->getData(
                             $path
                         )
                     );
@@ -516,7 +516,7 @@ $server->setHandler(
                         {
                             $h1[] = $reader->getH1(
                                 $reader->toGemini(
-                                    file_get_contents(
+                                    $filesystem->getData(
                                         $file
                                     )
                                 )
@@ -528,7 +528,7 @@ $server->setHandler(
                         {
                             $h1[] = $reader->getH1(
                                 $reader->toGemini(
-                                    file_get_contents(
+                                    $filesystem->getData(
                                         $file
                                     )
                                 )
