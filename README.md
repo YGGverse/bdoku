@@ -8,7 +8,7 @@ Project under development, please join to work by sending PR or bug report!
 
 ## Examples
 
-* `gemini://[301:23b4:991a:634d::db]` - Mirror of `http://[222:a8e4:50cd:55c:788e:b0a5:4e2f:a92c]`
+* `gemini://[301:23b4:991a:634d::b]` - Mirror of `http://[222:a8e4:50cd:55c:788e:b0a5:4e2f:a92c]`
   * `gemini://howto-ygg.duckdns.org` - Clearnet alias
 
 ## Install
