@@ -26,7 +26,8 @@ Project under development, please join to work by sending PR or bug report!
 1. `cd dokuwiki-gemini-server`
 2. `mkdir host/127.0.0.1`
 3. `cp example/config.json host/127.0.0.1/config.json`
-4. `openssl req -x509 -newkey rsa:4096 -keyout key.rsa -out cert.pem -days 365 -nodes -subj "/CN=127.0.0.1"`
+4. `cd host/127.0.0.1`
+5. `openssl req -x509 -newkey rsa:4096 -keyout key.rsa -out cert.pem -days 365 -nodes -subj "/CN=127.0.0.1"`
 
 ## Start
 
