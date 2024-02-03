@@ -37,7 +37,7 @@ After `data` folder update, you need just to restart your server with systemd or
 
 `php src/server.php 127.0.0.1`
 
-Open `gemini://127.0.0.1` in your favorite Gemini browser and enjoy reading!
+Open `gemini://127.0.0.1` in your favorite [Gemini browser](https://github.com/kevachat/awesome-gemini) and enjoy reading!
 
 ## Update
 
