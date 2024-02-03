@@ -2,7 +2,7 @@
 
 Allows to launch read-only DokuWiki instance using [Gemini Protocol](https://geminiprotocol.net/)
 
-It based on [titan-II](https://github.com/YGGverse/titan-II) for server, [gemini-php](https://github.com/YGGverse/gemini-php) to parse DokuWiki data folder, [cache-php](https://github.com/YGGverse/cache-php) to save compiled pages in memory and [manticore](https://github.com/manticoresoftware) for full-text search.
+It based on [titan-II](https://github.com/YGGverse/titan-II) server, [gemini-php](https://github.com/YGGverse/gemini-php) to parse DokuWiki data folder, [cache-php](https://github.com/YGGverse/cache-php) to save compiled pages in memory and [manticore](https://github.com/manticoresoftware) for full-text search.
 
 Project under development, please join to work by sending PR or bug report!
 
