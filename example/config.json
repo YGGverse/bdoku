@@ -11,7 +11,7 @@
         "default":
         {
           "code":20,
-          "meta":"text/gemini; charset=utf-8;"
+          "meta":"text/gemini; charset=utf-8"
         }
       }
   },
