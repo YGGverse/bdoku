@@ -307,6 +307,29 @@ $server->setHandler(
                 // Append about info
                 $lines[] = $config->string->about;
 
+                // Append about info
+                $lines[] = $config->string->about;
+
+                // Append aliases
+                if ($config->dokuwiki->url->alias)
+                {
+                    $lines[] = sprintf(
+                        '## %s',
+                        $config->string->alias
+                    );
+
+                    foreach ($config->dokuwiki->url->alias as $base => $name)
+                    {
+                        $lines[] = sprintf(
+                            '=> %s/%s %s',
+                            $base,
+                            $matches[1],
+                            $name
+                        );
+                    }
+                }
+
+                // Build content
                 $response->setContent(
                     implode(
                         PHP_EOL,
@@ -456,6 +479,25 @@ $server->setHandler(
                     // Append about info
                     $lines[] = $config->string->about;
 
+                    // Append aliases
+                    if ($config->dokuwiki->url->alias)
+                    {
+                        $lines[] = sprintf(
+                            '## %s',
+                            $config->string->alias
+                        );
+
+                        foreach ($config->dokuwiki->url->alias as $base => $name)
+                        {
+                            $lines[] = sprintf(
+                                '=> %s/%s %s',
+                                $base,
+                                $matches[1],
+                                $name
+                            );
+                        }
+                    }
+
                     // Merge lines
                     $content = implode(
                         PHP_EOL,
@@ -578,7 +620,7 @@ $server->setHandler(
                     // Append about info
                     $lines[] = sprintf(
                         '## %s',
-                        $config->string->resources
+                        $config->string->actions
                     );
 
                     // Append search link
@@ -596,6 +638,25 @@ $server->setHandler(
 
                     // Append about info
                     $lines[] = $config->string->about;
+
+                    // Append aliases
+                    if ($config->dokuwiki->url->alias)
+                    {
+                        $lines[] = sprintf(
+                            '## %s',
+                            $config->string->alias
+                        );
+
+                        foreach ($config->dokuwiki->url->alias as $base => $name)
+                        {
+                            $lines[] = sprintf(
+                                '=> %s/%s %s',
+                                $base,
+                                $matches[1],
+                                $name
+                            );
+                        }
+                    }
 
                     // Merge lines
                     $content = implode(

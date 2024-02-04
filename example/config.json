@@ -41,13 +41,14 @@
   },
   "dokuwiki":
   {
-    "uri":
-    {
-      "home":"start"
-    },
     "url":
     {
-      "source":"http://.."
+      "source":"http://..",
+      "alias":
+      {
+        "gemini://..":"",
+        "gemini://..":""
+      }
     }
   },
   "string":
@@ -63,6 +64,7 @@
     "nothing":"Nothing found by this request",
     "main":"Main page",
     "source":"Source",
+    "alias":"Alias",
     "welcome":"About",
     "about":"=> https://github.com/YGGverse/dokuwiki-gemini-server GitHub"
   }
