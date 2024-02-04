@@ -128,7 +128,7 @@ foreach ($filesystem->getList() as $path)
 
     if ($uri = $filesystem->getPageUriByPath($path))
     {
-        if ($data = $filesystem->getData($path))
+        if ($data = $filesystem->getDataByPath($path))
         {
             $gemini = $reader->toGemini(
                 $data
@@ -401,7 +401,7 @@ $server->setHandler(
 
                     // Convert
                     $gemini = $reader->toGemini(
-                        $filesystem->getData(
+                        $filesystem->getDataByPath(
                             $path
                         )
                     );
@@ -511,7 +511,7 @@ $server->setHandler(
                         {
                             $h1[] = $reader->getH1(
                                 $reader->toGemini(
-                                    $filesystem->getData(
+                                    $filesystem->getDataByPath(
                                         $file
                                     )
                                 )
@@ -523,7 +523,7 @@ $server->setHandler(
                         {
                             $h1[] = $reader->getH1(
                                 $reader->toGemini(
-                                    $filesystem->getData(
+                                    $filesystem->getDataByPath(
                                         $file
                                     )
                                 )
@@ -615,6 +615,29 @@ $server->setHandler(
                     );
 
                     return $response;
+                }
+
+                // Media request
+                else if ($path = $filesystem->getMediaPathByUri($_uri))
+                {
+                    if ($mime = $filesystem->getMimeByPath($path))
+                    {
+                        if ($data = $filesystem->getDataByPath($path))
+                        {
+                            // Set MIME
+                            $response->setMeta(
+                                $mime
+                            );
+
+                            // Append data
+                            $response->setContent(
+                                $data
+                            );
+
+                            // Response
+                            return $response;
+                        }
+                    }
                 }
         }
 
