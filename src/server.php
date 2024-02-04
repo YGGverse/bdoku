@@ -468,7 +468,7 @@ $server->setHandler(
                     $lines[] = sprintf(
                         '=> %s/%s %s',
                         $config->dokuwiki->url->source,
-                        $matches[1],
+                        $_uri,
                         $config->string->source
                     );
 
@@ -488,7 +488,7 @@ $server->setHandler(
                             $lines[] = sprintf(
                                 '=> %s/%s %s',
                                 $base,
-                                $matches[1],
+                                $_uri,
                                 $name
                             );
                         }
@@ -645,7 +645,7 @@ $server->setHandler(
                             $lines[] = sprintf(
                                 '=> %s/%s %s',
                                 $base,
-                                $matches[1],
+                                $_uri,
                                 $name
                             );
                         }
