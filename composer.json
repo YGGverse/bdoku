@@ -1,7 +1,7 @@
 {
-    "name": "yggverse/dokuwiki-gemini-server",
-    "description": "DokuWiki bridge for Gemini Protocol",
-    "keywords": [ "yggverse", "gemini", "gemini-protocol", "gemini-server", "wiki", "dokuwiki", "manticore", "bridge", "server" ],
+    "name": "yggverse/betahowto",
+    "description": "DokuWiki Satellite for Gemini Protocol",
+    "keywords": [ "yggverse", "betahowto", "gemini", "gemini-protocol", "gemini-server", "wiki", "dokuwiki", "manticore", "bridge", "server" ],
     "homepage": "https://github.com/yggverse/dokuwiki-to-gemini",
     "type": "project",
     "require": {
