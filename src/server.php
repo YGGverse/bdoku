@@ -307,9 +307,6 @@ $server->setHandler(
                 // Append about info
                 $lines[] = $config->string->about;
 
-                // Append about info
-                $lines[] = $config->string->about;
-
                 // Append aliases
                 if ($config->dokuwiki->url->alias)
                 {
