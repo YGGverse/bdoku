@@ -698,9 +698,13 @@ $server->setHandler(
                 }
         }
 
-        // Route not found
+        // Not found
         $response->setCode(
             51
+        );
+
+        $response->setMeta(
+            $config->string->nothing
         );
 
         return $response;
