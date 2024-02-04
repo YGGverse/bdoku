@@ -321,9 +321,8 @@ $server->setHandler(
                     foreach ($config->dokuwiki->url->alias as $base => $name)
                     {
                         $lines[] = sprintf(
-                            '=> %s/%s %s',
+                            '=> %s %s',
                             $base,
-                            $matches[1],
                             $name
                         );
                     }
