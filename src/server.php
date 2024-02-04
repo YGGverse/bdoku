@@ -348,19 +348,19 @@ $server->setHandler(
 
                 $_uri = isset($matches[1]) ? $matches[1] : '';
 
-                // File request, get page content
-                if ($path = $filesystem->getPagePathByUri($_uri))
+                // Check for cached results
+                if ($content = $memory->get($_uri))
                 {
-                    // Check for cached results
-                    if ($content = $memory->get($path))
-                    {
-                        $response->setContent(
-                            $content
-                        );
+                    $response->setContent(
+                        $content
+                    );
 
-                        return $response;
-                    }
+                    return $response;
+                }
 
+                // File request, get page content
+                else if ($path = $filesystem->getPagePathByUri($_uri))
+                {
                     // Define base URL
                     $reader->setMacros(
                         '~URL:base~',
@@ -506,7 +506,7 @@ $server->setHandler(
 
                     // Cache results
                     $memory->set(
-                        $path,
+                        $_uri,
                         $content
                     );
 
@@ -521,16 +521,6 @@ $server->setHandler(
                 // File not found, request directory for minimal navigation
                 else if ($directory = $filesystem->getDirectoryPathByUri($_uri))
                 {
-                    // Check for cached results
-                    if ($content = $memory->get('/'))
-                    {
-                        $response->setContent(
-                            $content
-                        );
-
-                        return $response;
-                    }
-
                     // Init reader
                     $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
 
@@ -666,7 +656,7 @@ $server->setHandler(
 
                     // Cache results
                     $memory->set(
-                        '/',
+                        $_uri,
                         $content
                     );
 
