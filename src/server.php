@@ -408,14 +408,6 @@ $server->setHandler(
                                 $menu
                             )
                         );
-
-                        $reader->setRule(
-                            '/\{\{indexmenu_n>[\d]+\}\}/i',
-                            implode(
-                                PHP_EOL,
-                                $menu
-                            )
-                        );
                     }
 
                     // Convert
