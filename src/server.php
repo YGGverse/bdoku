@@ -348,19 +348,19 @@ $server->setHandler(
 
                 $_uri = isset($matches[1]) ? $matches[1] : '';
 
-                // Check for cached results
-                if ($content = $memory->get($_uri))
-                {
-                    $response->setContent(
-                        $content
-                    );
-
-                    return $response;
-                }
-
                 // File request, get page content
-                else if ($path = $filesystem->getPagePathByUri($_uri))
+                if ($path = $filesystem->getPagePathByUri($_uri))
                 {
+                    // Check for cached results
+                    if ($content = $memory->get($path))
+                    {
+                        $response->setContent(
+                            $content
+                        );
+
+                        return $response;
+                    }
+
                     // Define base URL
                     $reader->setMacros(
                         '~URL:base~',
@@ -506,7 +506,7 @@ $server->setHandler(
 
                     // Cache results
                     $memory->set(
-                        $_uri,
+                        $path,
                         $content
                     );
 
@@ -519,10 +519,17 @@ $server->setHandler(
                 }
 
                 // File not found, request directory for minimal navigation
-                else if ($directory = $filesystem->getDirectoryPathByUri($_uri))
+                else if ($path = $filesystem->getDirectoryPathByUri($_uri))
                 {
-                    // Init reader
-                    $reader = new \Yggverse\Gemini\Dokuwiki\Reader();
+                    // Check for cached results
+                    if ($content = $memory->get($path))
+                    {
+                        $response->setContent(
+                            $content
+                        );
+
+                        return $response;
+                    }
 
                     // Init home page content
                     $lines = [
@@ -656,7 +663,7 @@ $server->setHandler(
 
                     // Cache results
                     $memory->set(
-                        $_uri,
+                        $path,
                         $content
                     );
 
