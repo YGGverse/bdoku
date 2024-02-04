@@ -342,10 +342,10 @@ $server->setHandler(
                 // Parse request
                 preg_match('/^\/([^\/]*)$/', $request->getPath(), $matches);
 
-                $_uri = isset($matches[1]) ? $matches[1] : '';
+                $uri = isset($matches[1]) ? $matches[1] : '';
 
                 // File request, get page content
-                if ($path = $filesystem->getPagePathByUri($_uri))
+                if ($path = $filesystem->getPagePathByUri($uri))
                 {
                     // Check for cached results
                     if ($content = $memory->get($path))
@@ -367,7 +367,7 @@ $server->setHandler(
                     $menu = [];
 
                     // Append index sections
-                    if ($sections = $helper->getChildrenSectionLinksByUri($_uri))
+                    if ($sections = $helper->getChildrenSectionLinksByUri($uri))
                     {
                         // Append header
                         $menu[] = sprintf(
@@ -383,7 +383,7 @@ $server->setHandler(
                     }
 
                     // Get children pages
-                    if ($pages = $helper->getChildrenPageLinksByUri($_uri))
+                    if ($pages = $helper->getChildrenPageLinksByUri($uri))
                     {
                         // Append header
                         $menu[] = sprintf(
@@ -468,7 +468,7 @@ $server->setHandler(
                     $lines[] = sprintf(
                         '=> %s/%s %s',
                         $config->dokuwiki->url->source,
-                        $_uri,
+                        $uri,
                         $config->string->source
                     );
 
@@ -488,7 +488,7 @@ $server->setHandler(
                             $lines[] = sprintf(
                                 '=> %s/%s %s',
                                 $base,
-                                $_uri,
+                                $uri,
                                 $name
                             );
                         }
@@ -515,7 +515,7 @@ $server->setHandler(
                 }
 
                 // File not found, request directory for minimal navigation
-                else if ($path = $filesystem->getDirectoryPathByUri($_uri))
+                else if ($path = $filesystem->getDirectoryPathByUri($uri))
                 {
                     // Check for cached results
                     if ($content = $memory->get($path))
@@ -537,7 +537,7 @@ $server->setHandler(
 
                     $segments = [];
 
-                    foreach ((array) explode(':', $_uri) as $segment)
+                    foreach ((array) explode(':', $uri) as $segment)
                     {
                         $segments[] = $segment;
 
@@ -579,7 +579,7 @@ $server->setHandler(
                     );
 
                     // Get children sections
-                    if ($sections = $helper->getChildrenSectionLinksByUri($_uri))
+                    if ($sections = $helper->getChildrenSectionLinksByUri($uri))
                     {
                         // Append header
                         $lines[] = sprintf(
@@ -595,7 +595,7 @@ $server->setHandler(
                     }
 
                     // Get children pages
-                    if ($pages = $helper->getChildrenPageLinksByUri($_uri))
+                    if ($pages = $helper->getChildrenPageLinksByUri($uri))
                     {
                         // Append header
                         $lines[] = sprintf(
@@ -645,7 +645,7 @@ $server->setHandler(
                             $lines[] = sprintf(
                                 '=> %s/%s %s',
                                 $base,
-                                $_uri,
+                                $uri,
                                 $name
                             );
                         }
@@ -672,7 +672,7 @@ $server->setHandler(
                 }
 
                 // Media request
-                else if ($path = $filesystem->getMediaPathByUri($_uri))
+                else if ($path = $filesystem->getMediaPathByUri($uri))
                 {
                     if ($mime = $filesystem->getMimeByPath($path))
                     {
