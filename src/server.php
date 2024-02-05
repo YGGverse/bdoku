@@ -362,7 +362,7 @@ $server->setHandler(
                         '~URL:base~',
                         sprintf(
                             'gemini://%s%s/',
-                            $config->gemini->server->host,
+                            $request->getHost(),
                             $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port
                         )
                     );
