@@ -360,7 +360,11 @@ $server->setHandler(
                     // Define base URL
                     $reader->setMacros(
                         '~URL:base~',
-                        '/'
+                        sprintf(
+                            'gemini://%s%s/',
+                            $config->gemini->server->host,
+                            $config->gemini->server->port == 1965 ? null : ':' . $config->gemini->server->port
+                        )
                     );
 
                     // Define index menu
