@@ -1,8 +1,8 @@
 {
-    "name": "yggverse/betahowto",
+    "name": "yggverse/betadoku",
     "description": "DokuWiki Satellite for Gemini Protocol",
-    "keywords": [ "yggverse", "betahowto", "gemini", "gemini-protocol", "gemini-server", "wiki", "dokuwiki", "manticore", "bridge", "server" ],
-    "homepage": "https://github.com/yggverse/dokuwiki-to-gemini",
+    "keywords": [ "yggverse", "betadoku", "gemini", "gemini-protocol", "gemini-server", "wiki", "dokuwiki", "manticore", "bridge", "server" ],
+    "homepage": "https://github.com/yggverse/betadoku",
     "type": "project",
     "require": {
         "yggverse/titan-ii": "^1.0",
