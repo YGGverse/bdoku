@@ -18,13 +18,13 @@ Project under development, please join to work by sending PR or bug report!
 2. `dpkg -i manticore-repo.noarch.deb`
 3. `apt update`
 4. `apt install git composer memcached manticore manticore-extra php-fpm php-memcached php-mysql php-mbstring`
-5. `git clone https://github.com/YGGverse/betadoku.git`
-6. `cd betadoku`
+5. `git clone https://github.com/YGGverse/bdoku.git`
+6. `cd bdoku`
 7. `composer update`
 
 ## Setup
 
-1. `cd betadoku`
+1. `cd bdoku`
 2. `mkdir host/127.0.0.1`
 3. `cp example/config.json host/127.0.0.1/config.json`
 4. `cd host/127.0.0.1`
@@ -32,7 +32,7 @@ Project under development, please join to work by sending PR or bug report!
 
 ## Start
 
-Before launch the server, copy or create alias of `path/to/dokuwiki/data` folder to `betadoku/host/127.0.0.1` on example above.
+Before launch the server, copy or create alias of `path/to/dokuwiki/data` folder to `bdoku/host/127.0.0.1` on example above.
 
 On every start, previous memory cache will be cleaned and new search index created.
 After `data` folder update, you need just to restart your server with systemd or another process manager.
@@ -43,6 +43,6 @@ Open `gemini://127.0.0.1` in your favorite [Gemini browser](https://github.com/k
 
 ## Update
 
-1. `cd betadoku`
+1. `cd bdoku`
 2. `git pull` - get latest codebase from this repository
 3. `composer update` - update vendor libraries
