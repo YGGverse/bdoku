@@ -243,6 +243,7 @@ $server->setHandler(
                 ];
 
                 // Append page title
+                $lines[] = null;
                 $lines[] = sprintf(
                     '# %s - %s',
                     $config->string->search,
@@ -252,17 +253,20 @@ $server->setHandler(
                 // Append search results
                 if ($total = $results->getTotal())
                 {
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '%s: %d',
                         $config->string->found,
                         $total
                     );
 
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '## %s',
                         $config->string->results
                     );
 
+                    $lines[] = null;
                     foreach($results as $result)
                     {
                         $lines[] = sprintf(
@@ -276,16 +280,19 @@ $server->setHandler(
                 // Nothing found
                 else
                 {
+                    $lines[] = null;
                     $lines[] = $config->string->nothing;
                 }
 
                 // Append actions
+                $lines[] = null;
                 $lines[] = sprintf(
                     '## %s',
                     $config->string->actions
                 );
 
                 // Append search link
+                $lines[] = null;
                 $lines[] = sprintf(
                     '=> /search %s',
                     $config->string->search
@@ -298,6 +305,7 @@ $server->setHandler(
                 );
 
                 // Append source link
+                $lines[] = null;
                 $lines[] = sprintf(
                     '=> %s %s',
                     $config->dokuwiki->url->source,
@@ -310,11 +318,13 @@ $server->setHandler(
                 // Append aliases
                 if ($config->dokuwiki->url->alias)
                 {
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '## %s',
                         $config->string->alias
                     );
 
+                    $lines[] = null;
                     foreach ($config->dokuwiki->url->alias as $base => $name)
                     {
                         $lines[] = sprintf(
@@ -374,12 +384,14 @@ $server->setHandler(
                     if ($sections = $helper->getChildrenSectionLinksByUri($uri))
                     {
                         // Append header
+                        $lines[] = null;
                         $menu[] = sprintf(
                             '### %s',
                             $config->string->sections
                         );
 
                         // Append sections
+                        $lines[] = null;
                         foreach ($sections as $section)
                         {
                             $menu[] = $section;
@@ -390,12 +402,14 @@ $server->setHandler(
                     if ($pages = $helper->getChildrenPageLinksByUri($uri))
                     {
                         // Append header
+                        $lines[] = null;
                         $menu[] = sprintf(
                             '### %s',
                             $config->string->pages
                         );
 
                         // Append pages
+                        $lines[] = null;
                         foreach ($pages as $page)
                         {
                             $menu[] = $page;
@@ -428,11 +442,13 @@ $server->setHandler(
                     // Get page links
                     if ($links = $reader->getLinks($gemini))
                     {
+                        $lines[] = null;
                         $lines[] = sprintf(
                             '## %s',
                             $config->string->links
                         );
 
+                        $lines[] = null;
                         foreach ($links as $link)
                         {
                             $lines[] = sprintf(
@@ -443,12 +459,14 @@ $server->setHandler(
                     }
 
                     // Append actions header
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '## %s',
                         $config->string->actions
                     );
 
                     // Append search link
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '=> /search %s',
                         $config->string->search
@@ -461,6 +479,7 @@ $server->setHandler(
                     );
 
                     // Append source link
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '=> %s/%s %s',
                         $config->dokuwiki->url->source,
@@ -569,6 +588,7 @@ $server->setHandler(
                     }
 
                     // Append header
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '# %s',
                         empty($h1[0]) ? $config->string->welcome : implode(' ', $h1)
@@ -578,12 +598,14 @@ $server->setHandler(
                     if ($sections = $helper->getChildrenSectionLinksByUri($uri))
                     {
                         // Append header
+                        $lines[] = null;
                         $lines[] = sprintf(
                             '## %s',
                             $config->string->sections
                         );
 
                         // Append sections
+                        $lines[] = null;
                         foreach ($sections as $section)
                         {
                             $lines[] = $section;
@@ -594,12 +616,14 @@ $server->setHandler(
                     if ($pages = $helper->getChildrenPageLinksByUri($uri))
                     {
                         // Append header
+                        $lines[] = null;
                         $lines[] = sprintf(
                             '## %s',
                             $config->string->pages
                         );
 
                         // Append pages
+                        $lines[] = null;
                         foreach ($pages as $page)
                         {
                             $lines[] = $page;
@@ -607,12 +631,14 @@ $server->setHandler(
                     }
 
                     // Append about info
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '## %s',
                         $config->string->actions
                     );
 
                     // Append search link
+                    $lines[] = null;
                     $lines[] = sprintf(
                         '=> /search %s',
                         $config->string->search
@@ -631,11 +657,13 @@ $server->setHandler(
                     // Append aliases
                     if ($config->dokuwiki->url->alias)
                     {
+                        $lines[] = null;
                         $lines[] = sprintf(
                             '## %s',
                             $config->string->alias
                         );
 
+                        $lines[] = null;
                         foreach ($config->dokuwiki->url->alias as $base => $name)
                         {
                             $lines[] = sprintf(
