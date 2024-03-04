@@ -493,11 +493,13 @@ $server->setHandler(
                     // Append aliases
                     if ($config->dokuwiki->url->alias)
                     {
+                        $lines[] = null;
                         $lines[] = sprintf(
                             '## %s',
                             $config->string->alias
                         );
 
+                        $lines[] = null;
                         foreach ($config->dokuwiki->url->alias as $base => $name)
                         {
                             $lines[] = sprintf(
