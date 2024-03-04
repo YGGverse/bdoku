@@ -243,7 +243,6 @@ $server->setHandler(
                 ];
 
                 // Append page title
-                $lines[] = null;
                 $lines[] = sprintf(
                     '# %s - %s',
                     $config->string->search,
@@ -590,7 +589,6 @@ $server->setHandler(
                     }
 
                     // Append header
-                    $lines[] = null;
                     $lines[] = sprintf(
                         '# %s',
                         empty($h1[0]) ? $config->string->welcome : implode(' ', $h1)
