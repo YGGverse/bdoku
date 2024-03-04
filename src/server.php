@@ -384,14 +384,14 @@ $server->setHandler(
                     if ($sections = $helper->getChildrenSectionLinksByUri($uri))
                     {
                         // Append header
-                        $lines[] = null;
+                        $menu[] = null;
                         $menu[] = sprintf(
                             '### %s',
                             $config->string->sections
                         );
 
                         // Append sections
-                        $lines[] = null;
+                        $menu[] = null;
                         foreach ($sections as $section)
                         {
                             $menu[] = $section;
@@ -402,14 +402,14 @@ $server->setHandler(
                     if ($pages = $helper->getChildrenPageLinksByUri($uri))
                     {
                         // Append header
-                        $lines[] = null;
+                        $menu[] = null;
                         $menu[] = sprintf(
                             '### %s',
                             $config->string->pages
                         );
 
                         // Append pages
-                        $lines[] = null;
+                        $menu[] = null;
                         foreach ($pages as $page)
                         {
                             $menu[] = $page;
