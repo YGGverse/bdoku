@@ -37,6 +37,15 @@ Before launch the server, copy or create alias of `path/to/dokuwiki/data` folder
 On every start, previous memory cache will be cleaned and new search index created.
 After `data` folder update, you need just to restart your server with systemd or another process manager.
 
+When launching with systemd, just make sure that manticore server already running:
+
+```
+[Unit]
+Wants=manticore.service
+After=manticore.service
+...
+```
+
 `php src/server.php 127.0.0.1`
 
 Open `gemini://127.0.0.1` in your favorite [Gemini browser](https://github.com/kr1sp1n/awesome-gemini)!
